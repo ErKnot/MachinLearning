@@ -22,12 +22,13 @@ class Least_square:
         return self
 
 
-    def gradient(self, coefficientes: np.ndarray):
-        self._gradient = np.dot(np.dot(self._X.T,self._X ), coefficientes) - np.dot(self._X.T, self.learning_targets)
-        return self._gradient
+    def gradient(self, coefficients: np.ndarray):
+#        self._gradient = np.dot(np.dot(self._X.T,self._X ), coefficientes) - np.dot(self._X.T, self.learning_targets)
+        self._error = (np.dot(self._X, coefficients) - self.learning_targets)
+        return  np.dot(self._X.T, self._error)
 
 
-    def predict(self, gradient_descent = True, learning_rate : float = 0.01, num_iterations: int = 1000, criterion: str = 'random'):
+    def predict(self, gradient_descent = True, learning_rate : float = 0.001, num_iterations: int = 10000, criterion: str = 'origin'):
         # Give the theta that minimize the LMS function
 
         self._predicted_coefficients = STARTING_POINT[criterion]((self.num_cols + 1, 1))
