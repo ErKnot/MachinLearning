@@ -26,13 +26,27 @@ class MyMSE(Predictor):
         self._error = (np.dot(self._X, coefficients) - self._y)
         return np.divide(2, self._num_rows) * np.dot(self._X.T, self._error)
         
-    def predict(self, learning_rate: float = 0.01, n_iterations: int = 1000, criterion: str = 'ones') -> np.array:
+    def predict(self, stochastic = False, learning_rate: float = 0.01, n_iterations: int = 1000, criterion: str = 'ones') -> np.array:
         self._predicted_coefficient = STARTING_POINT[criterion]((self._X.shape[1], 1))
-        #self._cost_history = []
+        self._history = {
+            "Predicted_coefficient": [self._predicted_coefficient],
+            "cost_history": [self.mse(self._predicted_coefficient)]
+        }
+        
+        if stochastic:
+            self._predicted_coefficient = self._predicted_coefficient - learning_rate 
+        
+            return self._predicted_coefficient
+            
         for iteration in np.arange(n_iterations):
-            #self._cost_history.append(self.mse(self._predicted_coefficient))
             self._predicted_coefficient = self._predicted_coefficient - learning_rate * self.mse_gradient(self._predicted_coefficient)
-        return self._predicted_coefficient#, self._cost_history
+            self._history["Predicted_coefficient"].append(self._predicted_coefficient)
+            self._history["cost_history"].append(self.mse(self._predicted_coefficient))
+        
+        return self._predicted_coefficient
+    
+    def history(self):
+        return self._history
             
 # 
 
@@ -42,7 +56,8 @@ if __name__ == "__main__":
     mse = MyMSE()
     mse.fit(x, y)
     print(mse.mse(np.array([[1],[2]])))
-    print(mse.predict(learning_rate=0.01,n_iterations= 100000, criterion='random'))
+    mse.predict(learning_rate=0.01,n_iterations= 1000, criterion='random')
+    print(mse.history())
     
 
 
