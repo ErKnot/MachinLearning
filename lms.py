@@ -38,7 +38,7 @@ class Least_square(Predictor):
         }
         
         for iteration in range(num_iterations):
-            self._predicted_coefficients = self._predicted_coefficients - learning_rate * self.gradient(self._predicted_coefficients)
+            self._predicted_coefficients += - learning_rate * self.gradient(self._predicted_coefficients)
             self._history["Predicted_coefficient"].append(self._predicted_coefficients)
             self._history["cost_history"].append(self.compute(self._predicted_coefficients))
         

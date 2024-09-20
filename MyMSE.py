@@ -39,7 +39,7 @@ class MyMSE(Predictor):
             return self._predicted_coefficient
             
         for iteration in np.arange(n_iterations):
-            self._predicted_coefficient = self._predicted_coefficient - learning_rate * self.mse_gradient(self._predicted_coefficient)
+            self._predicted_coefficient += - learning_rate * self.mse_gradient(self._predicted_coefficient)
             self._history["Predicted_coefficient"].append(self._predicted_coefficient)
             self._history["cost_history"].append(self.mse(self._predicted_coefficient))
         
@@ -56,8 +56,8 @@ if __name__ == "__main__":
     mse = MyMSE()
     mse.fit(x, y)
     print(mse.mse(np.array([[1],[2]])))
-    mse.predict(learning_rate=0.01,n_iterations= 1000, criterion='random')
-    print(mse.history())
+    print(mse.predict(learning_rate=0.01,n_iterations= 1000, criterion='random'))
+#    print(mse.history())
     
 
 
