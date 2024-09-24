@@ -45,7 +45,7 @@ def gradient_descent(gradient, x, y, start, learn_rate: float, n_iter: int = 50,
     return vector if vector.shape else vector.item()
 
 
-def sgd(gradient, x, y, start, learn_rate=0.1, batch_size=1, n_iter=50, tolerance=1e-06, dtype="float64", random_state=None):
+def sgd(gradient, x, y,n_vars=None, start=None, learn_rate=0.1, decay_rate=0.0, batch_size=1, n_iter=50, tolerance=1e-06, dtype="float64", random_state=None):
     
     # checking if the gradient is callable
     if not callable(gradient):
@@ -66,12 +66,21 @@ def sgd(gradient, x, y, start, learn_rate=0.1, batch_size=1, n_iter=50, toleranc
     rng = np.random.default_rng(seed=seed)
     
     # Initializing the values of the variables
-    vector = np.array(start, dtype=dtype_)
+    vector = (
+        rng.normal(size=int(n_vars)).astype(dtype_)
+        if start is None else
+        np.array(start, dtype=dtype_)
+    )
     
     # Setting up and checking the learning rate
     learn_rate = np.array(learn_rate, dtype=dtype_)
     if np.any(learn_rate <= 0):
         raise ValueError("'learn_rate' must be greater than zero")
+    
+    # Setting up the decay rate
+    decay_rate = np.array(decay_rate, dtype=dtype_)
+    if np.any(decay_rate < 0) or np.any(decay_rate > 1):
+        raise ValueError("'decay_rate' must be between zero and one")
     
     # Setting up and checking the maximal number of iterations
     batch_size = int(batch_size)
@@ -91,6 +100,9 @@ def sgd(gradient, x, y, start, learn_rate=0.1, batch_size=1, n_iter=50, toleranc
     if np.any(tolerance <=0):
         raise ValueError("'tolerance' must be greater than zero" )
     
+    # Setting the difference to zero for the first iteration
+    diff = 0
+    
     # Performing the gradient descent loop
     for _ in range(n_iter):
         # Shuffle x and y
@@ -98,12 +110,12 @@ def sgd(gradient, x, y, start, learn_rate=0.1, batch_size=1, n_iter=50, toleranc
         
         # Performing minibatch moves
         for start in range(0, n_obs, batch_size):
-            stop = batch_size
-            x_batch, y_batch = xy[start:stop, :-1], xy[start:stop, -1]
+            stop = batch_size + start
+            x_batch, y_batch = xy[start:stop, :-1], xy[start:stop, -1:]
             
             # recalculating the difference
             grad = np.array(gradient(x_batch, y_batch, vector), dtype_)
-            diff = -learn_rate * grad
+            diff = decay_rate * diff - learn_rate * grad
             
             # checking the absolute value difference is small enough
             if np.all(np.abs(diff) <= tolerance):
@@ -116,13 +128,10 @@ def sgd(gradient, x, y, start, learn_rate=0.1, batch_size=1, n_iter=50, toleranc
 
 
 
+
+
 def ssr_gradient(x, y, b):
-    ssr = b[0]
-    for row in range(len(x)):
-        for col in range(len(x[row])):        
-            ssr += b[i + 1] * x[row][col]
-        ssr += -y
-    
+    res = b[0] + b[1] * x - y
     return res.mean(), (res * x).mean()
 
 
@@ -138,7 +147,11 @@ def ssr(x, y, b):
     return ssr
 
 if __name__ == "__main__":
-    pass
+    x = np.array([5, 15, 25, 35, 45, 55])
+    y = np.array([5, 20, 14, 32, 22, 38])
+#    print(sgd(ssr_gradient, x, y, start=[0.5, 0.5], learn_rate=0.0008,batch_size=5, n_iter=100_000))
+#    print(gradient_descent(ssr_gradient, x, y, start=[0.5, 0.5], learn_rate=0.0008, n_iter=100_000))
+    print(sgd(ssr_gradient, x, y, n_vars=2, learn_rate=0.0001, decay_rate=0.8, batch_size=3, n_iter=100_000, random_state=0))
 
 
 
