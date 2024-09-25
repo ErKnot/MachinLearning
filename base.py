@@ -10,5 +10,18 @@ class Predictor(ABC):
     def predict(self):
         pass
 
+class Cost_function(ABC):
+    @abstractmethod
+    def fit(self):
+        pass
+
+    @abstractmethod
+    def compute(self):
+        pass
+
+    @abstractmethod
+    def gradient(self):
+        pass
+
 
 
