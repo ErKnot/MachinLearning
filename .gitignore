@@ -1,0 +1,14 @@
+# pyenv
+.python-version
+
+# Environment variables
+.env
+.env.*
+
+ Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
