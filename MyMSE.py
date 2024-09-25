@@ -1,17 +1,17 @@
 import numpy as np
 from base import Cost_function
 
-STARTING_POINT = {
-    "origin" : np.zeros,
-    "ones" : np.ones,
-    "random" : np.random.random
-}
+# STARTING_POINT = {
+#     "origin" : np.zeros,
+#     "ones" : np.ones,
+#     "random" : np.random.random
+# }
 
 class MyMSE(Cost_function):
     def __init__(self):
         super().__init__()
     
-    def fit(self, x: np.ndarray, y: np.ndarray):
+    def fit(self, x: np.ndarray, y: np.ndarray, dtype=float):
         self._y = y
         self._num_rows = x.shape[0]
         self._num_cols = x.shape[1]
@@ -20,7 +20,7 @@ class MyMSE(Cost_function):
 
     def compute(self, aguments: np.ndarray) -> float:
         self._error = (np.dot(self._X, aguments) - self._y)
-        return np.mean( np.dot(self._error, self._error.T))
+        return np.mean(np.dot(self._error, self._error.T))
     
     def gradient(self, aguments: np.ndarray) -> float:
         self._error = (np.dot(self._X, aguments) - self._y)
@@ -46,7 +46,7 @@ class MyMSE(Cost_function):
     #     return self._predicted_coefficient
     
     # def history(self):
-        return self._history
+    #    return self._history
             
 # 
 
@@ -58,6 +58,14 @@ if __name__ == "__main__":
     mse.fit(x, y)
     print(mse.compute(arguments))
     print(mse.gradient(arguments))
+    x= np.array([2.4,5.0,1.5,3.8,8.7,3.6,1.2,8.1,2.5,5,1.6,1.6,2.4,3.9,5.4]).reshape(-1, 3)
+    y = np.array([2.1,4.7,1.7,3.6,8.7]).reshape(-1, 1)
+    mse = MyMSE()
+    mse.fit(x, y)
+    print(mse.compute(arguments))
+    print(mse.gradient(arguments))
+
+
 
     
 
