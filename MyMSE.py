@@ -20,7 +20,7 @@ class MyMSE(Cost_function):
 
     def compute(self, aguments: np.ndarray) -> float:
         self._error = (np.dot(self._X, aguments) - self._y)
-        return np.mean(np.dot(self._error, self._error.T))
+        return np.mean(self._error ** 2 )
     
     def gradient(self, aguments: np.ndarray) -> float:
         self._error = (np.dot(self._X, aguments) - self._y)
@@ -51,19 +51,31 @@ class MyMSE(Cost_function):
 # 
 
 if __name__ == "__main__":
-    x= np.array([2.4,5.0,1.5,3.8,8.7,3.6,1.2,8.1,2.5,5,1.6,1.6,2.4,3.9,5.4]).reshape(-1, 1)
-    y = np.array([2.1,4.7,1.7,3.6,8.7,3.2,1.0,8.0,2.4,6,1.1,1.3,2.4,3.9,4.8]).reshape(-1, 1)
-    arguments = np.array([[1],[2]])
+    # Test with 1 dimensional features (row of x)
+    # x= np.array([2.4,5.0,1.5,3.8,8.7,3.6,1.2,8.1,2.5,5,1.6,1.6,2.4,3.9,5.4]).reshape(-1, 1)
+    # y = np.array([2.1,4.7,1.7,3.6,8.7,3.2,1.0,8.0,2.4,6,1.1,1.3,2.4,3.9,4.8]).reshape(-1, 1)
+    # arguments = np.array([[1],[2]])
+
+    # Test with  two dimensional features (row of x)
+    x= np.array([1,2,1,3]).reshape(-1, 2)
+    y = np.array([1,1]).reshape(-1, 1)
+    arguments = np.array([[1],[1], [1]])
+
+    # Test with thre dimensional features (row of x)
+
+    x = np.random.randint(5, size=(2, 3))
+    y = np.random.randint(5, size=(2,1))
+    arguments = np.random.randint(5, size=(4, 1))
+    print("'x' is: ", x)
+    print("'y' is: ", y)
+    print("'arguments' is: ", arguments)
+
+    
+    # Test of the class
     mse = MyMSE()
     mse.fit(x, y)
-    print(mse.compute(arguments))
-    print(mse.gradient(arguments))
-    x= np.array([2.4,5.0,1.5,3.8,8.7,3.6,1.2,8.1,2.5,5,1.6,1.6,2.4,3.9,5.4]).reshape(-1, 3)
-    y = np.array([2.1,4.7,1.7,3.6,8.7]).reshape(-1, 1)
-    mse = MyMSE()
-    mse.fit(x, y)
-    print(mse.compute(arguments))
-    print(mse.gradient(arguments))
+    print("The value of the mse is: ", mse.compute(arguments))
+    print("The gradient is: ", mse.gradient(arguments))
 
 
 
