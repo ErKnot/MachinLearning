@@ -34,7 +34,7 @@ class MyMSE(Cost_function):
 
         # Checing the dimension of arguments
         if arguments.shape[0] != self._num_cols + 1:
-            raise ValueError("'arguments' lengths do not match")
+            raise ValueError(f"'arguments' lengths {arguments.shape[0]} do not match with the dimension of the features {self._num_cols + 1}")
 
         # Computing the mse function
         self._error = (np.dot(self._X, arguments) - self._y)
@@ -48,7 +48,7 @@ class MyMSE(Cost_function):
 
         # Checing the dimension of arguments
         if arguments.shape[0] != self._num_cols + 1:
-            raise ValueError("'arguments' lengths do not match")
+            raise ValueError(f"'arguments' lengths {arguments.shape[0]} do not match with the dimension of the features {self._num_cols + 1}")
 
         # Computing the gradient of the mse function
         self._error = (np.dot(self._X, arguments) - self._y)
